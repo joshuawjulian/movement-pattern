@@ -31,6 +31,24 @@
 	}
 	nav {
 		border-bottom: 2px solid black;
+		display: flex;
+		flex-direction: row;
+		justify-content: space-around;
+		height: 3rem;
+	}
+
+	nav a {
+		height: 100%;
+		min-width: 5rem;
+		padding: 1rem;
+		display: flex;
+  	justify-content: center;
+  	align-items: center;
+		background-color: #fff;
+	}
+
+	nav a:hover {
+		background-color:beige;
 	}
 	main {
 		width: 90%;

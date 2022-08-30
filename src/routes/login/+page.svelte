@@ -34,15 +34,34 @@
 			<p>{errorText}</p>
 		{/if}
 		{#if $userStore === null}
-			<form on:submit|preventDefault={login}>
+			<form
+				on:submit|preventDefault={login}
+				class="flex flex-row space-between"
+			>
 				<label for="email">Email</label>
-				<input id="email" type="email" bind:value={email} />
+				<input
+					id="email"
+					type="email"
+					bind:value={email}
+					class="border-b-2 border-primary"
+				/>
 				<label for="password">Password</label>
-				<input id="password" type="password" bind:value={password} />
-				<input type="submit" value="Login" />
+				<input
+					id="password"
+					type="password"
+					bind:value={password}
+					class="border-b-2 border-primary mb-2"
+				/>
+				<input
+					type="submit"
+					value="Login"
+					class="border-primary border-2 hover:bg-primary-light"
+				/>
 			</form>
 		{:else}
-			<button on:click={logout}>Logout</button>
+			<button on:click={logout} class="border-primary border-4 hover:bg-primary"
+				>Logout</button
+			>
 		{/if}
 	</main>
 </div>

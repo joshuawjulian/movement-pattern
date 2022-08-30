@@ -1,42 +1,20 @@
 <script lang="ts">
 	import { userStore } from '$lib/supabase';
-	import './reset.css';
+	import '../app.css';
 </script>
 
-<wrapper>
-	<main>
-		<header>Website Title</header>
-		<nav>
-			<a href="/login">Login</a>
-			<a href="/admin">Admin</a>
+<div class="w-full h-full">
+	<main class="flex flex-col w-full h-full">
+		<header class="bg-primary-dark border-y-black text-xl p-2">
+			Movement Pattern Based Workout Planner
+		</header>
+		<nav class="bg-primary-light flex flex-row">
+			<a class="p-2 hover:bg-primary-dark" href="/login">Login</a>
+			<a class="p-2 hover:bg-primary-dark" href="/admin">Admin</a>
 		</nav>
 		{#if $userStore}
 			<h2>{$userStore.email}</h2>
 		{/if}
 		<slot />
 	</main>
-</wrapper>
-
-<style>
-	wrapper {
-		width: 100%;
-		display: flex;
-		justify-content: center;
-	}
-	header {
-		width: 100%;
-		background-color: #a0a0a0;
-		font-size: 3rem;
-		border-bottom: 2px solid black;
-	}
-	nav {
-		border-bottom: 2px solid black;
-	}
-	main {
-		width: 90%;
-		display: flex;
-		flex-direction: column;
-		background-color: #c0c0c0;
-		box-shadow: 1rem 1rem black;
-	}
-</style>
+</div>

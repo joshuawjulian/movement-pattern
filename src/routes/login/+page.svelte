@@ -28,63 +28,42 @@
 	};
 </script>
 
-<div>
-	<main>
+<div class="h-full w-full">
+	<main class="h-full w-full flex flex-col">
 		{#if errorText}
 			<p>{errorText}</p>
 		{/if}
 		{#if $userStore === null}
 			<form
 				on:submit|preventDefault={login}
-				class="flex flex-row space-between"
+				class="flex flex-col space-between md:mx-20 md:mt-20 m-5"
 			>
 				<label for="email">Email</label>
 				<input
 					id="email"
 					type="email"
 					bind:value={email}
-					class="border-b-2 border-primary"
+					class="border-2 rounded-lg p-2 focus:outline-none border-vblue"
 				/>
 				<label for="password">Password</label>
 				<input
 					id="password"
 					type="password"
 					bind:value={password}
-					class="border-b-2 border-primary mb-2"
+					class="border-2 rounded-lg p-2 focus:outline-none border-vblue"
 				/>
 				<input
 					type="submit"
 					value="Login"
-					class="border-primary border-2 hover:bg-primary-light"
+					class="border-2 rounded-lg p-2 focus:outline-none hover:bg-white border-vblue my-2"
 				/>
 			</form>
 		{:else}
-			<button on:click={logout} class="border-primary border-4 hover:bg-primary"
+			<button
+				on:click={logout}
+				class="border-vblue border-4 w-1/2 h-20 rounded-lg mx-auto mt-20 hover:bg-vblue"
 				>Logout</button
 			>
 		{/if}
 	</main>
 </div>
-
-<style>
-	div {
-		width: 100%;
-		height: 100%;
-		display: grid;
-		place-items: center;
-	}
-
-	main {
-		min-width: 500px;
-		display: grid;
-		place-items: center;
-		align-content: center;
-	}
-	form {
-		width: 100%;
-		height: 100%;
-		display: flex;
-
-		flex-direction: column;
-	}
-</style>

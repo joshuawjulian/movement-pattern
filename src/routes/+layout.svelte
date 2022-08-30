@@ -7,29 +7,31 @@
 	};
 </script>
 
-<div class="w-full h-full flex">
+<div class="w-full h-screen flex bg-vblue-50">
 	<div class="flex flex-col w-full h-full">
-		<header class="bg-primary-dark text-xl font-semibold p-2">
+		<header class="bg-vblue-800 text-xl text-white font-semibold p-2">
 			Movement Pattern Based Workout Planner
 		</header>
-		<nav class="bg-primary flex flex-row">
+		<nav class="bg-vblue-500 flex flex-row">
 			{#if !$userStore}
-				<a class="p-2 hover:bg-primary-dark" href="/login">Login</a>
+				<a class="p-2 text-white hover:bg-vblue-800" href="/login">Login</a>
 			{:else}
 				<a
-					class="p-2 hover:bg-primary-dark"
+					class="p-2 text-white hover:bg-vblue-800"
 					href="/login"
 					on:click|preventDefault={logout}>Logout</a
 				>
 			{/if}
-			<a class="p-2 hover:bg-primary-dark" href="/admin">Admin</a>
+			<a class="p-2 text-white hover:bg-vblue-800" href="/admin">Admin</a>
 			{#if $userStore}
-				<h2 class="ml-auto my-auto justify-items-center content-center">
+				<h2
+					class="ml-auto mr-2 my-auto text-white justify-items-center content-center"
+				>
 					Logged in as: {$userStore.email}
 				</h2>
 			{/if}
 		</nav>
-		<main class="h-max w-full">
+		<main class="h-full w-full">
 			<slot />
 		</main>
 	</div>

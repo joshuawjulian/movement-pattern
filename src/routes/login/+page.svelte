@@ -9,7 +9,6 @@
 	const login = async () => {
 		errorText = null;
 		pending = true;
-		console.log({ email, password });
 		const { error } = await supabase.auth.signInWithPassword({
 			email,
 			password,

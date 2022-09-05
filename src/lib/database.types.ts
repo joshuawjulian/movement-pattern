@@ -14,7 +14,14 @@ export interface Database {
 					name: string;
 				};
 			};
-
+			movement_pattern: {
+				Row: {
+					id: string;
+					percent: number;
+					movement_id: string;
+					pattern_id: string;
+				};
+			};
 			pattern: {
 				Row: {
 					id: string;

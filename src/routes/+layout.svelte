@@ -15,6 +15,9 @@
 		<nav class="bg-vblue-500 flex flex-row">
 			{#if !$userStore}
 				<a class="p-2 text-white hover:bg-vblue-800" href="/login">Login</a>
+				<a class="p-2 text-white hover:bg-vblue-800" href="/register"
+					>Register</a
+				>
 			{:else}
 				<a
 					class="p-2 text-white hover:bg-vblue-800"

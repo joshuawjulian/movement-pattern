@@ -3,18 +3,19 @@
 
 	let email = '';
 	let password = '';
-	let pending = false;
+	let password_again = '';
 	let errorText: string | null = null;
 
-	const login = async () => {
+	const register = async () => {
 		errorText = null;
-		pending = true;
-		console.log({ email, password });
-		const { error } = await supabase.auth.signInWithPassword({
+		if (password !== password_again) {
+			errorText = 'Passwords Must Match';
+			return;
+		}
+		const { error } = await supabase.auth.signUp({
 			email,
 			password,
 		});
-		pending = false;
 		if (error) {
 			errorText = error.message;
 			return;
@@ -22,20 +23,15 @@
 	};
 
 	const logout = async () => {
-		pending = true;
 		await supabase.auth.signOut();
-		pending = false;
 	};
 </script>
 
 <div class="h-full w-full">
 	<main class="h-full w-full flex flex-col">
-		{#if errorText}
-			<p>{errorText}</p>
-		{/if}
 		{#if $userStore === null}
 			<form
-				on:submit|preventDefault={login}
+				on:submit|preventDefault={register}
 				class="flex flex-col space-between md:mx-20 md:mt-20 m-5"
 			>
 				<h1 class="text-center text-3xl">Register</h1>
@@ -56,9 +52,16 @@
 					bind:value={password}
 					class="border-2 rounded-lg p-2 focus:outline-none border-vblue"
 				/>
+				<label for="password">Password Again</label>
+				<input
+					id="password"
+					type="password"
+					bind:value={password_again}
+					class="border-2 rounded-lg p-2 focus:outline-none border-vblue"
+				/>
 				<input
 					type="submit"
-					value="Login"
+					value="Register"
 					class="border-2 rounded-lg p-2 focus:outline-none hover:bg-white border-vblue my-2"
 				/>
 			</form>

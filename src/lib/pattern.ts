@@ -8,3 +8,17 @@ export async function getAllPatterns(): Promise<Pattern_Type[]> {
 	if (error) throw new Error(error.message);
 	return data;
 }
+
+export async function getPatternByName(patternName: string) {
+	const { data, error } = await supabase
+		.from('pattern')
+		.select('*')
+		.filter('name', 'eq', patternName);
+
+	if (error) {
+		console.error(error);
+		throw new Error(error.message);
+	}
+
+	return data[0];
+}

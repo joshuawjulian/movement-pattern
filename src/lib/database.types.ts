@@ -21,6 +21,12 @@ export interface Database {
 					movement_id: string;
 					pattern_id: string;
 				};
+				Update: {
+					id?: string | null;
+					percent: number;
+					movement_id?: string | null;
+					pattern_id?: string | null;
+				};
 			};
 			pattern: {
 				Row: {

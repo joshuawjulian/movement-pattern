@@ -70,26 +70,26 @@
 	}
 </script>
 
-<div class="flex flex-col items-center w-full">
-	<table class="border-2 border-black">
-		<tr class="border-black border-2" class:border-red-600={storesUpdate}>
-			<th class="p-5">Movement</th>
+<div>
+	<table>
+		<tr class:border-red={storesUpdate}>
+			<th />
+			<th>Movement</th>
 			{#each $allPatterns as pattern}
-				<th class="w-4">{pattern.name}</th>
+				<th>{pattern.name}</th>
 			{/each}
 		</tr>
 		{#each Object.keys($mpTable).sort() as move}
-			<tr class="border-black border-2" class:border-red-600={storesUpdate}>
-				<td class="text-center"
-					>{move}<button
-						class="border-2 border-red-600"
-						on:click={async () => await deleteMoveByName(move)}>DEL</button
-					></td
-				>
+			<tr class:border-red={storesUpdate}>
+				<td>
+					<button on:click={async () => await deleteMoveByName(move)}>
+						DEL
+					</button>
+				</td>
+				<td class="movement">{move}</td>
 				{#each $allPatterns as pattern}
-					<td class="text-center">
+					<td>
 						<input
-							class="w-20 border-2 border-black"
 							type="number"
 							bind:value={$mpTable[move][pattern.name]}
 							on:change={async () => await updateTableValue(move, pattern.name)}
@@ -99,14 +99,44 @@
 			</tr>
 		{/each}
 	</table>
-	<div class="border-2 border-black flex flex-col w-1/3">
-		<form
-			on:submit|preventDefault={async () => await addNewMovement()}
-			class="flex flex-col align-items-center"
-		>
+	<div>
+		<form on:submit|preventDefault={async () => await addNewMovement()}>
 			<label for="newMovementName">Name:</label>
 			<input type="text" id="newMovementName" bind:value={newMovementName} />
 			<button type="submit" class="border-2 border-black">Add</button>
 		</form>
 	</div>
 </div>
+
+<style>
+	.border-red {
+		border: 3px solid red;
+	}
+
+	table {
+		padding: 0;
+		margin: 0;
+	}
+
+	tr {
+		padding: 0;
+		margin: 0;
+	}
+
+	th,
+	td {
+		border-right: 3px solid black;
+	}
+
+	th {
+		font-weight: bolder;
+	}
+
+	td.movement {
+		font-weight: bold;
+	}
+
+	input {
+		width: 100%;
+	}
+</style>

@@ -1,3 +1,44 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+:root {
+--theme-bg: #ededed;
+--theme-bg-shade: #c9c9c9;
+--theme-fg: #47463d;
+--theme-pri: #0077b6;
+--theme-accent:#f77f00;
+}
+
+:root[data-theme='dark'] {
+--theme-bg: #47463d;
+--theme-bg-shade: #666662;
+	--theme-fg: #ededed;
+	--theme-pri: #7cb8d8;
+	--theme-accent: #f77f00;
+}
+
+
+* {
+	transition: all 0.5s ease-in-out;
+	color: var(--theme-fg);
+	font-family: 'Sora', serif;
+}
+
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+button, input {
+	color: var(--theme-fg);
+	background-color: var(--theme-bg-shade);
+}
+button {
+border: 1px solid var(--theme-fg);
+}
+
+input {
+	border: none;
+	border-bottom: 1px solid var(--theme-fg);
+}

@@ -27,6 +27,11 @@ export interface Database {
 					movement_id?: string | null;
 					pattern_id?: string | null;
 				};
+				Insert: {
+					percent: number;
+					movement_id: string;
+					pattern_id: string;
+				};
 			};
 			pattern: {
 				Row: {
@@ -39,6 +44,38 @@ export interface Database {
 				Update: {
 					id?: string | null;
 					name: string;
+				};
+			};
+			workout: {
+				Select: {
+					id: string;
+					name: string;
+					description: string;
+					created_by: string;
+				};
+				Insert: {
+					name: string;
+					description: string | null;
+					created_by: string;
+				};
+			};
+			workout_movement: {
+				Select: {
+					id: string;
+					movement_id: string;
+					workout_id: string;
+					percent: number;
+				};
+				Update: {
+					id: string;
+					movement_id: string;
+					workout_id: string;
+					percent: number;
+				};
+				Insert: {
+					movement_id: string;
+					workout_id: string;
+					percent: number;
 				};
 			};
 		};

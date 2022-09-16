@@ -1,20 +1,29 @@
 <script lang="ts">
 </script>
 
-<div class="w-full h-full">
-	<nav class="w-full flex flex-row bg-primary-light">
-		<a href="/admin/movement" class="p-2 hover:bg-primary-dark hover:text-white"
-			>Movement</a
-		>
-		<a href="/admin/pattern" class="p-2 hover:bg-primary-dark hover:text-white"
-			>Pattern</a
-		>
-		<a
-			href="/admin/movement_pattern"
-			class="p-2 hover:bg-primary-dark hover:text-white">MovementPattern</a
-		>
+<div class="wrapper">
+	<nav>
+		<a href="/admin/movement">movement</a>
+		<a href="/admin/pattern">pattern</a>
+		<a href="/admin/movement_pattern">movement pattern</a>
 	</nav>
-	<main class="w-full h-full p-2">
+	<main>
 		<slot />
 	</main>
 </div>
+
+<style>
+	.wrapper {
+		width: 100%;
+		min-height: 100vh;
+		background-color: var(--bg-color-light);
+		color: var(--font-color-dark);
+		display: grid;
+		grid-template-columns: minmax(10rem, 20%) auto;
+	}
+	nav {
+		display: flex;
+		flex-direction: column;
+		border-right: 4px solid var(--theme-pri);
+	}
+</style>

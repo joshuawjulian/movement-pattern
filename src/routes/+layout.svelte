@@ -1,41 +1,71 @@
 <script lang="ts">
 	import { supabase, userStore } from '$lib/supabase';
+	import './reset.css';
 	import '../app.css';
+
+	import DarkLightMode from '$lib/components/DarkLightMode.svelte';
 
 	const logout = async () => {
 		await supabase.auth.signOut();
 	};
 </script>
 
-<div class="w-full h-screen flex bg-vblue-50">
-	<div class="flex flex-col w-full h-full">
-		<header class="bg-vblue-800 text-xl text-white font-semibold p-2">
-			Movement Pattern Based Workout Planner
-		</header>
-		<nav class="bg-vblue-500 flex flex-row">
-			{#if !$userStore}
-				<a class="p-2 text-white hover:bg-vblue-800" href="/login">Login</a>
-				<a class="p-2 text-white hover:bg-vblue-800" href="/register"
-					>Register</a
-				>
-			{:else}
-				<a
-					class="p-2 text-white hover:bg-vblue-800"
-					href="/login"
-					on:click|preventDefault={logout}>Logout</a
-				>
-			{/if}
-			<a class="p-2 text-white hover:bg-vblue-800" href="/admin">Admin</a>
-			{#if $userStore}
-				<h2
-					class="ml-auto mr-2 my-auto text-white justify-items-center content-center"
-				>
-					Logged in as: {$userStore.email}
-				</h2>
-			{/if}
-		</nav>
-		<main class="h-full w-full">
-			<slot />
-		</main>
-	</div>
+<div class="wrapper">
+	<header>Additional Work</header>
+	<nav>
+		{#if !$userStore}
+			<a href="/login">Login</a>
+			<a href="/register">Register</a>
+		{:else}
+			<a href="/login" on:click|preventDefault={logout}>Logout</a>
+		{/if}
+		<a href="/admin">Admin</a>
+		<a href="/workout/create">Workout</a>
+		{#if $userStore}
+			<h2>
+				Logged in as: {$userStore.email}
+			</h2>
+		{/if}
+		<DarkLightMode />
+	</nav>
+	<main>
+		<slot />
+	</main>
 </div>
+
+<style>
+	header {
+		font-size: 3.5rem;
+		background-color: var(--theme-bg);
+		color: var(--theme-pri);
+		border-bottom: 3px solid var(--theme-pri);
+	}
+	div.wrapper {
+		background-color: var(--theme-bg);
+		border: 2px solid black;
+		min-height: 100vh;
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+	}
+
+	nav {
+		display: flex;
+		justify-content: center;
+		background-color: var(--theme-bg);
+		border-bottom: 3px solid var(--theme-fg);
+	}
+
+	nav {
+		border-bottom: var(--theme-pri) solid 3px;
+		background-color: var(--theme-bg);
+	}
+	nav a {
+		padding: 0 0.5rem;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		color: var(--theme-fg);
+		background-color: var(--theme-bg);
+	}
+</style>

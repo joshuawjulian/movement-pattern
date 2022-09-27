@@ -14,17 +14,16 @@
 	<header>Additional Work</header>
 	<nav>
 		{#if !$userStore}
-			<a href="/login">Login</a>
-			<a href="/register">Register</a>
+			<a href="/login">Login/Register</a>
 		{:else}
 			<a href="/login" on:click|preventDefault={logout}>Logout</a>
 		{/if}
 		<a href="/admin">Admin</a>
 		<a href="/workout/create">Workout</a>
 		{#if $userStore}
-			<h2>
+			<h5>
 				Logged in as: {$userStore.email}
-			</h2>
+			</h5>
 		{/if}
 		<DarkLightMode />
 	</nav>
@@ -33,7 +32,7 @@
 	</main>
 </div>
 
-<style>
+<style lang="postcss">
 	header {
 		font-size: 3.5rem;
 		background-color: var(--theme-bg);
@@ -54,18 +53,20 @@
 		justify-content: center;
 		background-color: var(--theme-bg);
 		border-bottom: 3px solid var(--theme-fg);
-	}
-
-	nav {
 		border-bottom: var(--theme-pri) solid 3px;
 		background-color: var(--theme-bg);
+		& a {
+			padding: 0 0.5rem;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			color: var(--theme-fg);
+			background-color: var(--theme-bg);
+		}
 	}
-	nav a {
-		padding: 0 0.5rem;
+
+	h5 {
 		display: flex;
-		justify-content: center;
 		align-items: center;
-		color: var(--theme-fg);
-		background-color: var(--theme-bg);
 	}
 </style>

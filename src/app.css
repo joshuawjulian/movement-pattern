@@ -1,14 +1,14 @@
 :root {
---theme-bg: #ededed;
---theme-bg-shade: #c9c9c9;
---theme-fg: #47463d;
---theme-pri: #0077b6;
---theme-accent:#f77f00;
+	--theme-bg: #ededed;
+	--theme-bg-shade: #c9c9c9;
+	--theme-fg: #47463d;
+	--theme-pri: #0077b6;
+	--theme-accent:#c26400;
 }
 
 :root[data-theme='dark'] {
---theme-bg: #47463d;
---theme-bg-shade: #666662;
+	--theme-bg: #47463d;
+	--theme-bg-shade: #666662;
 	--theme-fg: #ededed;
 	--theme-pri: #7cb8d8;
 	--theme-accent: #f77f00;
@@ -30,15 +30,20 @@ a:hover {
 	text-decoration: underline;
 }
 
-button, input {
+button, input, textarea, select {
 	color: var(--theme-fg);
 	background-color: var(--theme-bg-shade);
+
 }
 button {
 border: 1px solid var(--theme-fg);
 }
 
-input {
+input, textarea {
 	border: none;
 	border-bottom: 1px solid var(--theme-fg);
+}
+
+input:focus, textarea:focus {
+	outline: none;
 }

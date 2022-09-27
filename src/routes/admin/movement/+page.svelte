@@ -10,10 +10,16 @@
 	});
 </script>
 
-<h1 class="text-4xl">Pattern</h1>
-<table>
-	<tr><th>id</th><th>Name</th></tr>
+<div>
+	<h1>Movements</h1>
 	{#each allMovements as movement}
-		<tr><td>{movement.id}</td><td>{movement.name}</td></tr>
+		<a href={`/admin/movement/${movement.id}/`}>{movement.name}</a>
 	{/each}
-</table>
+</div>
+
+<style lang="postcss">
+	div {
+		display: flex;
+		flex-direction: column;
+	}
+</style>

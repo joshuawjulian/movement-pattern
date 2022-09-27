@@ -70,73 +70,75 @@
 	}
 </script>
 
-<div>
-	<table>
-		<tr class:border-red={storesUpdate}>
-			<th />
-			<th>Movement</th>
-			{#each $allPatterns as pattern}
-				<th>{pattern.name}</th>
-			{/each}
-		</tr>
-		{#each Object.keys($mpTable).sort() as move}
-			<tr class:border-red={storesUpdate}>
-				<td>
-					<button on:click={async () => await deleteMoveByName(move)}>
-						DEL
-					</button>
-				</td>
-				<td class="movement">{move}</td>
-				{#each $allPatterns as pattern}
-					<td>
-						<input
-							type="number"
-							bind:value={$mpTable[move][pattern.name]}
-							on:change={async () => await updateTableValue(move, pattern.name)}
-						/>
-					</td>
-				{/each}
-			</tr>
+<div class="wrapper">
+	<div class="table">
+		<div class="header" class:border-red={storesUpdate} />
+		<div class="header">Movement</div>
+		{#each $allPatterns as pattern}
+			<div class="header">{pattern.name}</div>
 		{/each}
-	</table>
-	<div>
-		<form on:submit|preventDefault={async () => await addNewMovement()}>
-			<label for="newMovementName">Name:</label>
-			<input type="text" id="newMovementName" bind:value={newMovementName} />
-			<button type="submit" class="border-2 border-black">Add</button>
-		</form>
+		{#each Object.keys($mpTable).sort() as move, i}
+			<div class="cell delete" class:even={i % 2 === 0}>
+				<button on:click={async () => await deleteMoveByName(move)}>
+					DEL
+				</button>
+			</div>
+			<div class="cell movement" class:even={i % 2 === 0}>{move}</div>
+			{#each $allPatterns as pattern}
+				<div class="cell data" class:even={i % 2 === 0}>
+					<input
+						type="number"
+						bind:value={$mpTable[move][pattern.name]}
+						on:change={async () => await updateTableValue(move, pattern.name)}
+						class="percent"
+					/>
+				</div>
+			{/each}
+		{/each}
+		<div>
+			<form on:submit|preventDefault={async () => await addNewMovement()}>
+				<label for="newMovementName">Name:</label>
+				<input type="text" id="newMovementName" bind:value={newMovementName} />
+				<button type="submit" class="border-2 border-black">Add</button>
+			</form>
+		</div>
 	</div>
 </div>
 
 <style>
 	.border-red {
 		border: 3px solid red;
+		background-color: red;
 	}
 
-	table {
-		padding: 0;
-		margin: 0;
-	}
-
-	tr {
-		padding: 0;
-		margin: 0;
-	}
-
-	th,
-	td {
-		border-right: 3px solid black;
-	}
-
-	th {
-		font-weight: bolder;
-	}
-
-	td.movement {
-		font-weight: bold;
-	}
-
-	input {
+	div.wrapper {
 		width: 100%;
+	}
+
+	div.table {
+		display: grid;
+		grid-template-columns: 5rem 15rem repeat(8, 5rem);
+		column-gap: 4px;
+		row-gap: 4px;
+	}
+
+	div.header {
+		border-bottom: 4px solid var(--theme-accent);
+	}
+
+	div.cell {
+		background-color: var(--theme-bg-shade);
+	}
+
+	div.even {
+		background-color: var(--theme-bg);
+	}
+
+	div.even > input {
+		background-color: var(--theme-bg);
+	}
+
+	input.percent {
+		width: 5rem;
 	}
 </style>

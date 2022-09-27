@@ -5,12 +5,20 @@ export interface Database {
 				Row: {
 					id: string;
 					name: string;
+					names?: { id?: string; name?: string }[];
 				};
 				Insert: {
 					name: string;
 				};
 				Update: {
 					id?: string | null;
+					name: string;
+				};
+			};
+			movement_name: {
+				Row: {
+					id: string;
+					movement_id: string;
 					name: string;
 				};
 			};

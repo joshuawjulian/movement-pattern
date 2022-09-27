@@ -25,5 +25,9 @@
 		display: flex;
 		flex-direction: column;
 		border-right: 4px solid var(--theme-pri);
+		padding: 1rem;
+	}
+	main {
+		padding: 1rem;
 	}
 </style>

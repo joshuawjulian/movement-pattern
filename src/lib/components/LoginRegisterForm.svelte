@@ -11,10 +11,6 @@
 
 	let errorMsg = '';
 
-	const flipRegister = () => {
-		isRegister = !isRegister;
-	};
-
 	const login = async () => {
 		isSubmitting = true;
 		const { error } = await supabase.auth.signInWithPassword({
@@ -47,16 +43,19 @@
 </script>
 
 <div class="wrapper">
+	{#if errorMsg !== ''}
+		<p>{errorMsg}</p>
+	{/if}
 	{#if $userStore === null}
 		<div class="select">
 			<button
-				on:click|preventDefault={flipRegister}
+				on:click|preventDefault={() => (isRegister = false)}
 				class:selected={!isRegister}
 			>
 				Login
 			</button>
 			<button
-				on:click|preventDefault={flipRegister}
+				on:click|preventDefault={() => (isRegister = true)}
 				class:selected={isRegister}
 			>
 				Register
@@ -64,11 +63,13 @@
 		</div>
 		<form>
 			<div class="input-group">
-				<label for="email">Email</label>
+				<label for="email"
+					><span class="material-icons">alternate_email</span></label
+				>
 				<input type="text" id="email" name="email" bind:value={email} />
 			</div>
 			<div class="input-group">
-				<label for="password">Password</label>
+				<label for="password"><span class="material-icons">lock</span></label>
 				<input
 					type="password"
 					id="password"
@@ -78,7 +79,9 @@
 			</div>
 			{#if isRegister}
 				<div class="input-group" transition:fly={{ x: 400, duration: 750 }}>
-					<label for="password_again">Password Again</label>
+					<label for="password_again"
+						><span class="material-icons">lock</span></label
+					>
 					<input
 						type="password"
 						id="password_again"
@@ -105,21 +108,25 @@
 
 <style lang="postcss">
 	div.wrapper {
-		width: 70%;
+		width: 100%;
 		height: 100%;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
+		padding: 1rem;
 	}
 
 	div.select {
 		width: 100%;
 		display: grid;
 		grid-template-columns: 1fr 1fr;
+		gap: 1rem;
+		padding-bottom: 1rem;
 
 		& > button {
-			padding: 3rem;
+			width: 100%;
+			padding: 1rem 0;
 		}
 
 		& > button.selected {
@@ -135,7 +142,7 @@
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
-		gap: 0.5rem;
+		gap: 1rem;
 
 		& > button {
 			padding: 1rem;
@@ -148,18 +155,24 @@
 		justify-content: center;
 		align-items: center;
 		width: 100%;
+		height: 3.5rem;
 		border-bottom: 2px solid var(--theme-fg);
 
 		& > label,
 		& > input {
-			padding: 1rem;
+			padding: 0.5rem;
 			background-color: var(--theme-bg-shade);
 			width: 100%;
+			height: 100%;
+			border: none;
 		}
 
 		& > label {
-			width: 12rem;
-			border-right: 2px solid var(--theme-fg);
+			width: 3rem;
+			font-size: 1rem;
+			display: flex;
+			justify-content: center;
+			align-items: center;
 		}
 
 		& > input {

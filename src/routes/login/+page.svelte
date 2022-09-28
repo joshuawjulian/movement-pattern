@@ -8,8 +8,9 @@
 
 <style lang="postcss">
 	div {
-		width: 100%;
+		width: 30rem;
 		height: 100%;
+		margin: auto;
 		display: flex;
 		align-items: center;
 		justify-content: center;

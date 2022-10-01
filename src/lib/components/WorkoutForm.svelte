@@ -1,18 +1,21 @@
 <script lang="ts">
 	import { getAllMovements, type Movement_Type } from '$lib/movement';
 
-	import type { WorkoutType } from '$lib/workout';
+	import {
+		upsertWorkout,
+		type WorkoutResponseSuccess,
+	} from '$lib/workout';
 	import { onMount } from 'svelte';
 	import { writable, type Writable } from 'svelte/store';
-	import { createEventDispatcher } from 'svelte';
+	import { updateWorkoutMovements } from '$lib/workout_movements';
+	import MovementForm from './MovementForm.svelte';
 
-	const dispatch = createEventDispatcher();
-
-	export let workout: WorkoutType = {
+	export let workout: WorkoutResponseSuccess = {
 		id: '',
 		name: '',
 		description: '',
 		created_by: '',
+		movements: [],
 	};
 
 	let allMovements: Writable<any[]> = writable([]);
@@ -25,7 +28,32 @@
 
 	function removeMovement(movement: Movement_Type) {
 		console.log(`remove movement ${movement.name}`);
-		selectedMovements = selectedMovements.filter((m) => m.id !== movement.id);
+		selectedMovements = selectedMovements.filter(
+			(m) => m.id !== movement.id,
+		);
+	}
+
+	async function upsertThisWorkout() {
+		console.log(workout);
+		let workoutToUpsert: WorkoutResponseSuccess;
+		if (workout.id === '') {
+			workoutToUpsert = {
+				name: workout.name,
+				description: workout.description,
+			};
+		} else {
+			workoutToUpsert = {
+				id: workout.id,
+				description: workout.description,
+				name: workout.name,
+			};
+		}
+		workout = await upsertWorkout(workoutToUpsert);
+		await updateWorkoutMovements(workout.id, selectedMovements);
+	}
+
+	$: if (workout) {
+		selectedMovements = workout.movements;
 	}
 
 	onMount(async () => {
@@ -34,33 +62,46 @@
 </script>
 
 <div class="wrapper">
-	<h3>Add/Edit Workout</h3>
-	<form on:submit|preventDefault>
+	<form on:submit|preventDefault={async () => await upsertThisWorkout()}>
 		<label for="workout_name">Name:</label>
 		<input type="text" id="workout_name" bind:value={workout.name} />
 		<label for="workout_desc">Description:</label>
-		<textarea type="text" id="workout_desc" bind:value={workout.description} />
+		<textarea
+			type="text"
+			id="workout_desc"
+			bind:value={workout.description}
+		/>
 		<label for="workout_movement_select">Select Movements:</label>
+		<div class="movement-container">
+			{#each selectedMovements as selMove}
+				<div class="movement">
+					<button on:click|preventDefault={() => removeMovement(selMove)}
+						><span class="material-icons">delete</span></button
+					>
+					<div>{selMove.name}</div>
+				</div>
+			{/each}
+		</div>
 		<div>
 			<select bind:value={selectedMovement}>
 				{#each $allMovements as movement}
 					<option value={movement}>{movement.name}</option>
 				{/each}
 			</select>
-			<button on:click={addSelectedMovement}>Add</button>
-		</div>
-		<div>
-			{#each selectedMovements as selMove}
-				<div>
-					<button on:click={() => removeMovement(selMove)}>Remove</button>
-					<div>{selMove.name}</div>
-				</div>
-			{/each}
+			<button on:click|preventDefault={addSelectedMovement}>Add</button>
 		</div>
 		<button type="submit">Save/Update</button>
 	</form>
-	<pre>Selected Movement: {JSON.stringify(selectedMovement, null, 2)} </pre>
-	<pre>SelectedMovements: {JSON.stringify(selectedMovements, null, 2)}</pre>
+	<pre>Selected Movement: {JSON.stringify(
+			selectedMovement,
+			null,
+			2,
+		)} </pre>
+	<pre>SelectedMovements: {JSON.stringify(
+			selectedMovements,
+			null,
+			2,
+		)}</pre>
 </div>
 
 <style lang="postcss">
@@ -75,7 +116,27 @@
 	form {
 		display: flex;
 		flex-direction: column;
-		min-width: 80%;
-		width: 50rem;
+		min-width: 100%;
+
+		& > textarea {
+			min-height: 7rem;
+		}
+	}
+
+	div.movement-container {
+		display: flex;
+		flex-direction: row;
+		gap: 1rem;
+	}
+	div.movement {
+		display: flex;
+		flex-direction: row;
+
+		align-items: center;
+
+		& > button {
+			display: flex;
+			align-items: center;
+		}
 	}
 </style>

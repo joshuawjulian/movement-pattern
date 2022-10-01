@@ -64,7 +64,11 @@ export interface Database {
 				Insert: {
 					name: string;
 					description: string | null;
-					created_by: string;
+					created_by?: string;
+					movements?: (
+						| { id: string; name?: string }
+						| { id?: string; name: string }
+					)[];
 				};
 			};
 			workout_movement: {

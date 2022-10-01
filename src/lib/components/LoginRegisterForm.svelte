@@ -12,6 +12,7 @@
 	let errorMsg = '';
 
 	const login = async () => {
+		errorMsg = '';
 		isSubmitting = true;
 		const { error } = await supabase.auth.signInWithPassword({
 			email,
@@ -23,6 +24,7 @@
 	};
 
 	const register = async () => {
+		errorMsg = '';
 		isSubmitting = true;
 
 		if (password !== password_again) {

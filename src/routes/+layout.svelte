@@ -19,7 +19,7 @@
 			<a href="/login" on:click|preventDefault={logout}>Logout</a>
 		{/if}
 		<a href="/admin">Admin</a>
-		<a href="/workout/create">Workout</a>
+		<a href="/workout">Workout</a>
 		{#if $userStore}
 			<h5>
 				Logged in as: {$userStore.email}

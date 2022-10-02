@@ -1,15 +1,15 @@
 import type { Database } from './database.types';
 import { supabase } from './supabase';
 
-export type Pattern_Type = Database['public']['Tables']['pattern']['Row'];
+export type PatternType = Database['public']['Tables']['pattern']['Row'];
 
-export async function getAllPatterns(): Promise<Pattern_Type[]> {
+async function getAll(): Promise<PatternType[]> {
 	const { data, error } = await supabase.from('pattern').select('*');
 	if (error) throw new Error(error.message);
 	return data;
 }
 
-export async function getPatternByName(patternName: string) {
+async function getByName(patternName: string) {
 	const { data, error } = await supabase
 		.from('pattern')
 		.select('*')
@@ -22,3 +22,8 @@ export async function getPatternByName(patternName: string) {
 
 	return data[0];
 }
+
+export const Pattern = {
+	getAll,
+	getByName,
+};

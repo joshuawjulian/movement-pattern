@@ -3,7 +3,7 @@ import { supabase } from './supabase';
 
 export type MovementType = Database['public']['Tables']['movement']['Row'];
 
-export async function getAllMovements(): Promise<MovementType[]> {
+async function getAll(): Promise<MovementType[]> {
 	const { data, error } = await supabase
 		.from('movement')
 		.select('*')
@@ -27,7 +27,7 @@ export async function getMovementById(id: string) {
 	return data;
 }
 
-export async function upsertMovement(movement: MovementType) {
+async function upsert(movement: MovementType) {
 	const { data, error } = await supabase
 		.from('movement')
 		.upsert({ id: movement.id, name: movement.name })
@@ -45,20 +45,17 @@ export async function upsertMovement(movement: MovementType) {
 		});
 	}
 
-	if (data.hasOwnProperty('id')) await updateMovementNames(data.id, names);
+	if (data.hasOwnProperty('id')) await updateNames(data.id, names);
 	else throw new Error('Movement needs an id');
 }
 
-export async function updateMovementNames(
-	id: string,
-	new_names: string[],
-) {
+async function updateNames(id: string, new_names: string[]) {
 	//ensure the movement id is valid
 	try {
 		let movement = await getMovementById(id);
 		if (!movement.id) throw new Error('Movement ID doesnt exist');
 
-		let data = await getMovementNames({ id });
+		let data = await getName({ id });
 		let current_names: string[] = [];
 		data.forEach((value) => current_names.push(value.name));
 
@@ -96,7 +93,7 @@ export async function updateMovementNames(
 	}
 }
 
-export async function getMovementByName(movementName: string) {
+async function getByName(movementName: string) {
 	const { data, error } = await supabase
 		.from('movement')
 		.select('*')
@@ -129,12 +126,12 @@ export async function deleteMovementByName(name: string) {
 	if (error) throw new Error(error.message);
 }
 
-export async function getMovementNames(movement: Partial<MovementType>) {
+async function getName(movement: Partial<MovementType>) {
 	if (movement.name === undefined && movement.id === undefined)
 		throw new Error('Movement must have either a name or id');
 
 	if (movement.name !== undefined) {
-		movement = await getMovementByName(movement.name);
+		movement = await getByName(movement.name);
 	}
 
 	const { data, error } = await supabase
@@ -146,3 +143,11 @@ export async function getMovementNames(movement: Partial<MovementType>) {
 
 	return data;
 }
+
+export const Movement = {
+	getAll,
+	getByName,
+	getName,
+	updateNames,
+	upsert,
+};

@@ -1,6 +1,5 @@
 <script lang="ts">
 	import WorkoutForm from '$components/WorkoutForm.svelte';
-	import { updateMovementNames } from '$lib/movement';
 	import {
 		getAllWorkoutShort,
 		getWorkoutById,

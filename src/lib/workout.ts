@@ -37,7 +37,7 @@ export type WorkoutResponseSuccess = WorkoutResponse['data'] & {
 
 export type WorkoutInsertType =
 	Database['public']['Tables']['workout']['Insert'];
-export async function upsertWorkout(workout: WorkoutInsertType) {
+export async function upsertAndReturn(workout: WorkoutInsertType) {
 	console.log(`upsertWorkout()`);
 	console.log(workout);
 	const { data, error } = await supabase
@@ -53,3 +53,7 @@ export async function upsertWorkout(workout: WorkoutInsertType) {
 
 	return data;
 }
+
+export const Workout = {
+	upsertAndReturn,
+};

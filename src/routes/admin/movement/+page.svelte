@@ -1,12 +1,13 @@
 <script lang="ts">
-	import { getAllMovements, type Movement_Type } from '$lib/movement';
+	import { db } from '$lib/db';
+	import type { MovementType } from '$lib/movement';
 
 	import { onMount } from 'svelte/internal';
 
-	let allMovements: Movement_Type[] = [];
+	let allMovements: MovementType[] = [];
 
 	onMount(async () => {
-		allMovements = await getAllMovements();
+		allMovements = await db.Movement.getAll();
 	});
 </script>
 

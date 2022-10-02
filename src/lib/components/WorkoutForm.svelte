@@ -1,13 +1,9 @@
 <script lang="ts">
-	import { getAllMovements, type MovementType } from '$lib/movement';
-
-	import {
-		upsertWorkout,
-		type WorkoutResponseSuccess,
-	} from '$lib/workout';
+	import type { WorkoutResponseSuccess } from '$lib/workout';
 	import { createEventDispatcher, onMount } from 'svelte';
 	import { writable, type Writable } from 'svelte/store';
 	import { db } from '$lib/db';
+	import type { MovementType } from '$lib/movement';
 
 	export let workout: WorkoutResponseSuccess = {
 		id: '',
@@ -49,7 +45,7 @@
 				name: workout.name,
 			};
 		}
-		workout = await upsertWorkout(workoutToUpsert);
+		workout = await db.Workout.upsertAndReturn(workoutToUpsert);
 		await db.WorkoutMovement.update(workout.id, selectedMovements);
 		dispatch('upsert');
 	}
@@ -59,7 +55,7 @@
 	}
 
 	onMount(async () => {
-		$allMovements = await getAllMovements();
+		$allMovements = await db.Movement.getAll();
 	});
 </script>
 

@@ -1,19 +1,20 @@
 <script lang="ts">
-	import { getAllMovements, type Movement_Type } from '$lib/movement';
+	import { db } from '$lib/db';
+	import type { PatternType } from '$lib/pattern';
 
 	import { onMount } from 'svelte/internal';
 
-	let allMovements: Movement_Type[] = [];
+	let allPatterns: PatternType[] = [];
 
 	onMount(async () => {
-		allMovements = await getAllMovements();
+		allPatterns = await db.Pattern.getAll();
 	});
 </script>
 
 <h1 class="text-4xl">Pattern</h1>
 <table>
 	<tr><th>id</th><th>Name</th></tr>
-	{#each allMovements as movement}
-		<tr><td>{movement.id}</td><td>{movement.name}</td></tr>
+	{#each allPatterns as pattern}
+		<tr><td>{pattern.id}</td><td>{pattern.name}</td></tr>
 	{/each}
 </table>

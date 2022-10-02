@@ -1,20 +1,13 @@
 import { supabase } from '$lib/supabase';
-import {
-	getAllPatterns,
-	getPatternByName,
-	type Pattern_Type,
-} from '$lib/pattern';
-import {
-	getAllMovements,
-	getMovementByName,
-	type Movement_Type,
-} from '$lib/movement';
+import { db } from './db';
+import type { MovementType } from './movement';
+import type { PatternType } from './pattern';
 
 export type MovementPattern_Type = {
 	id: string;
 	percent: number;
-	movement: Movement_Type;
-	pattern: Pattern_Type;
+	movement: MovementType;
+	pattern: PatternType;
 };
 
 export async function getAllMovementPatterns() {
@@ -30,8 +23,8 @@ export async function getMovementPatternByMovementPattern(
 	movementName: string,
 	patternName: string,
 ): Promise<MovementPattern_Type | null> {
-	const m = await getMovementByName(movementName);
-	const p = await getPatternByName(patternName);
+	const m = await db.Movement.getByName(movementName);
+	const p = await db.Pattern.getByName(patternName);
 	const { data, error } = await supabase
 		.from('movement_pattern')
 		.select('id, movement(*), pattern(*), percent')
@@ -47,8 +40,8 @@ export async function getMovementPatternByMovementPattern(
 export async function getMovementPatternTable() {
 	let table: any = {};
 
-	const allMovements = await getAllMovements();
-	const allPatterns = await getAllPatterns();
+	const allMovements = await db.Movement.getAll();
+	const allPatterns = await db.Pattern.getAll();
 
 	allMovements.forEach((movement) => {
 		allPatterns.forEach((pattern) => {
@@ -78,15 +71,18 @@ export async function updateMovementPattern(
 	if (percent < 0.0) percent = 0;
 	//get IDs
 
-	const m = await getMovementByName(movementName);
-	const p = await getPatternByName(patternName);
+	const m = await db.Movement.getByName(movementName);
+	const p = await db.Pattern.getByName(patternName);
 
 	if (percent == 0 || percent == 0.0) {
 		//delete
-		const { error } = await supabase.from('movement_pattern').delete().match({
-			pattern_id: p.id,
-			movement_id: m.id,
-		});
+		const { error } = await supabase
+			.from('movement_pattern')
+			.delete()
+			.match({
+				pattern_id: p.id,
+				movement_id: m.id,
+			});
 		if (error) throw new Error(error.message);
 	} else {
 		const mp = await getMovementPatternByMovementPattern(m.name, p.name);
@@ -109,7 +105,9 @@ export async function updateMovementPattern(
 		}
 
 		//update/insert
-		const { error } = await supabase.from('movement_pattern').upsert(upsert);
+		const { error } = await supabase
+			.from('movement_pattern')
+			.upsert(upsert);
 
 		if (error) throw new Error(error.message);
 	}

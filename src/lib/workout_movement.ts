@@ -25,9 +25,6 @@ async function update(
 	let movementsToAdd = [];
 	let movementsToRemove = [];
 
-	console.log('movementToUpdate');
-	console.log(movementsToUpdate);
-
 	//find movements to add
 	for (let i = 0; i < movementsToUpdate.length; i++) {
 		let move = movementsToUpdate[i];
@@ -51,11 +48,6 @@ async function update(
 			movementsToRemove.push(move);
 		}
 	}
-
-	console.log('MovementsToRemove');
-	console.log(movementsToRemove);
-	console.log('MovementsToAdd');
-	console.log(movementsToAdd);
 
 	await deleteMultiple(workout_id, movementsToRemove);
 	await insertMultipleAndReturn(workout_id, movementsToAdd);

@@ -44,7 +44,6 @@
 		bind:workout={currentWorkout}
 		on:upsert={async () => await updateForm()}
 	/>
-	<pre>{JSON.stringify(currentWorkout, null, 2)}</pre>
 </div>
 
 <style lang="postcss">

@@ -1,14 +1,13 @@
 <script lang="ts">
-	import { getAllMovements, type Movement_Type } from '$lib/movement';
+	import { getAllMovements, type MovementType } from '$lib/movement';
 
 	import {
 		upsertWorkout,
 		type WorkoutResponseSuccess,
 	} from '$lib/workout';
-	import { onMount } from 'svelte';
+	import { createEventDispatcher, onMount } from 'svelte';
 	import { writable, type Writable } from 'svelte/store';
-	import { updateWorkoutMovements } from '$lib/workout_movements';
-	import MovementForm from './MovementForm.svelte';
+	import { db } from '$lib/db';
 
 	export let workout: WorkoutResponseSuccess = {
 		id: '',
@@ -18,15 +17,17 @@
 		movements: [],
 	};
 
+	const dispatch = createEventDispatcher();
+
 	let allMovements: Writable<any[]> = writable([]);
-	let selectedMovements: Movement_Type[] = [];
-	let selectedMovement: Movement_Type;
+	let selectedMovements: MovementType[] = [];
+	let selectedMovement: MovementType;
 
 	function addSelectedMovement() {
 		selectedMovements = [...selectedMovements, selectedMovement];
 	}
 
-	function removeMovement(movement: Movement_Type) {
+	function removeMovement(movement: MovementType) {
 		console.log(`remove movement ${movement.name}`);
 		selectedMovements = selectedMovements.filter(
 			(m) => m.id !== movement.id,
@@ -49,10 +50,11 @@
 			};
 		}
 		workout = await upsertWorkout(workoutToUpsert);
-		await updateWorkoutMovements(workout.id, selectedMovements);
+		await db.WorkoutMovement.update(workout.id, selectedMovements);
+		dispatch('upsert');
 	}
 
-	$: if (workout) {
+	$: if (workout && workout.movements) {
 		selectedMovements = workout.movements;
 	}
 
@@ -92,16 +94,6 @@
 		</div>
 		<button type="submit">Save/Update</button>
 	</form>
-	<pre>Selected Movement: {JSON.stringify(
-			selectedMovement,
-			null,
-			2,
-		)} </pre>
-	<pre>SelectedMovements: {JSON.stringify(
-			selectedMovements,
-			null,
-			2,
-		)}</pre>
 </div>
 
 <style lang="postcss">

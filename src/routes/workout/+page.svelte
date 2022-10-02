@@ -1,5 +1,6 @@
 <script lang="ts">
 	import WorkoutForm from '$components/WorkoutForm.svelte';
+	import { updateMovementNames } from '$lib/movement';
 	import {
 		getAllWorkoutShort,
 		getWorkoutById,
@@ -21,20 +22,29 @@
 		currentWorkout = await getWorkoutById(id);
 	}
 
+	async function updateForm() {
+		allWorkouts = await getAllWorkoutShort();
+	}
+
 	onMount(async () => {
 		allWorkouts = await getAllWorkoutShort();
 	});
 </script>
 
 <div class="wrapper">
-	{#each allWorkouts as workout}
-		<button
-			on:click|preventDefault={async () => await loadWorkout(workout.id)}
-			>{workout.name}</button
-		>
-	{/each}
-
-	<WorkoutForm bind:workout={currentWorkout} />
+	<div>
+		{#each allWorkouts as workout}
+			<button
+				on:click|preventDefault={async () => await loadWorkout(workout.id)}
+				>{workout.name}</button
+			>
+		{/each}
+	</div>
+	<WorkoutForm
+		bind:workout={currentWorkout}
+		on:upsert={async () => await updateForm()}
+	/>
+	<pre>{JSON.stringify(currentWorkout, null, 2)}</pre>
 </div>
 
 <style lang="postcss">
@@ -42,6 +52,7 @@
 		width: 70%;
 		height: 100%;
 		display: flex;
+		flex-direction: column;
 		align-items: center;
 		justify-content: center;
 		margin: 0 auto;

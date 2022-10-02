@@ -1,9 +1,9 @@
 import type { Database } from './database.types';
 import { supabase } from './supabase';
 
-export type Movement_Type = Database['public']['Tables']['movement']['Row'];
+export type MovementType = Database['public']['Tables']['movement']['Row'];
 
-export async function getAllMovements(): Promise<Movement_Type[]> {
+export async function getAllMovements(): Promise<MovementType[]> {
 	const { data, error } = await supabase
 		.from('movement')
 		.select('*')
@@ -27,7 +27,7 @@ export async function getMovementById(id: string) {
 	return data;
 }
 
-export async function upsertMovement(movement: Movement_Type) {
+export async function upsertMovement(movement: MovementType) {
 	const { data, error } = await supabase
 		.from('movement')
 		.upsert({ id: movement.id, name: movement.name })
@@ -49,7 +49,10 @@ export async function upsertMovement(movement: Movement_Type) {
 	else throw new Error('Movement needs an id');
 }
 
-export async function updateMovementNames(id: string, new_names: string[]) {
+export async function updateMovementNames(
+	id: string,
+	new_names: string[],
+) {
 	//ensure the movement id is valid
 	try {
 		let movement = await getMovementById(id);
@@ -119,11 +122,14 @@ export async function deleteMovement(id: string) {
 }
 
 export async function deleteMovementByName(name: string) {
-	const { error } = await supabase.from('movement').delete().match({ name });
+	const { error } = await supabase
+		.from('movement')
+		.delete()
+		.match({ name });
 	if (error) throw new Error(error.message);
 }
 
-export async function getMovementNames(movement: Partial<Movement_Type>) {
+export async function getMovementNames(movement: Partial<MovementType>) {
 	if (movement.name === undefined && movement.id === undefined)
 		throw new Error('Movement must have either a name or id');
 

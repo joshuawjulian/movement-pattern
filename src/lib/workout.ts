@@ -1,5 +1,5 @@
 import type { Database } from './database.types';
-import type { Movement_Type } from './movement';
+import type { MovementType } from './movement';
 import { supabase } from './supabase';
 
 export async function getWorkoutById(id: string) {
@@ -10,7 +10,7 @@ export async function getWorkoutById(id: string) {
 		.single();
 
 	if (error) throw new Error(error.message);
-	let movements: Movement_Type[] = [];
+	let movements: MovementType[] = [];
 
 	data.movements.forEach((item: any) => {
 		movements.push(item.movement);
@@ -32,7 +32,7 @@ export async function getAllWorkoutShort() {
 
 export type WorkoutResponse = Awaited<ReturnType<typeof getWorkoutById>>;
 export type WorkoutResponseSuccess = WorkoutResponse['data'] & {
-	movements: Movement_Type[];
+	movements: MovementType[];
 };
 
 export type WorkoutInsertType =

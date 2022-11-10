@@ -37,7 +37,12 @@ button, input, textarea, select {
 
 }
 button {
-border: 1px solid var(--theme-fg);
+border: 2px solid var(--theme-fg);
+transition-property: none;
+}
+
+button:hover {
+	border-color: var(--theme-pri);
 }
 
 input, textarea {

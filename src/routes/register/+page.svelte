@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { supabase, userStore } from '$lib/supabase';
+	import { supabase, userStore } from '$lib/db/supabase';
 
 	let email = '';
 	let password = '';

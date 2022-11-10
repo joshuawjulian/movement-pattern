@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { db } from '$lib/db';
-	import type { PatternType } from '$lib/pattern';
+	import type { PatternType } from '$lib/db/pattern';
 
 	import { onMount } from 'svelte/internal';
 

@@ -1,12 +1,14 @@
 <script lang="ts">
-	import type { Movement_Type } from '$lib/movement';
+	import type { MovementType } from '$lib/db/movement';
 	import { createEventDispatcher } from 'svelte';
 
 	const dispatch = createEventDispatcher();
 
-	export let movement: Movement_Type = {
+	export let movement: MovementType = {
 		id: 'blank',
 		name: 'blank',
+		isWeighted: false,
+		names: [],
 	};
 
 	function dispatchUpdate() {
@@ -15,7 +17,7 @@
 
 	function addNameRow() {
 		if (movement.names === undefined) movement.names = [];
-		movement.names = [...movement.names, { name: '' }];
+		movement.names = [...movement.names, { id: '', name: '' }];
 	}
 
 	function removeRow(idx: number) {

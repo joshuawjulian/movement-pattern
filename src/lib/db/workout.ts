@@ -2,7 +2,19 @@ import type { Database } from './database.types';
 import type { MovementType } from './movement';
 import { supabase } from './supabase';
 
-export async function getWorkoutById(id: string) {
+export const Workout = {
+	upsertAndReturn,
+	getById,
+	getAllShort,
+};
+
+export type WorkoutType = {
+	id: string;
+	name: string;
+	description: string;
+};
+
+async function getById(id: string) {
 	const { data, error } = await supabase
 		.from('workout')
 		.select(`*, movements:workout_movement(id, movement(id,name))`)
@@ -20,7 +32,12 @@ export async function getWorkoutById(id: string) {
 	return data;
 }
 
-export async function getAllWorkoutShort() {
+export type WorkoutShortType = {
+	id: string;
+	name: string;
+};
+
+async function getAllShort(): Promise<WorkoutShortType[]> {
 	const { data, error } = await supabase
 		.from('workout')
 		.select('id, name');
@@ -30,7 +47,7 @@ export async function getAllWorkoutShort() {
 	return data;
 }
 
-export type WorkoutResponse = Awaited<ReturnType<typeof getWorkoutById>>;
+export type WorkoutResponse = Awaited<ReturnType<typeof getById>>;
 export type WorkoutResponseSuccess = WorkoutResponse['data'] & {
 	movements: MovementType[];
 };
@@ -53,7 +70,3 @@ export async function upsertAndReturn(workout: WorkoutInsertType) {
 
 	return data;
 }
-
-export const Workout = {
-	upsertAndReturn,
-};

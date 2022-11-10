@@ -1,22 +1,12 @@
 <script lang="ts">
-	import {
-		addMovement,
-		deleteMovement,
-		deleteMovementByName,
-		getAllMovements,
-		type Movement_Type,
-	} from '$lib/movement';
-
-	import {
-		getMovementPatternTable,
-		updateMovementPattern,
-	} from '$lib/movement_pattern';
-	import { getAllPatterns, type Pattern_Type } from '$lib/pattern';
+	import { db } from '$lib/db';
+	import type { MovementType } from '$lib/db/movement';
+	import type { PatternType } from '$lib/db/pattern';
 	import { onMount } from 'svelte/internal';
 	import { writable, type Writable } from 'svelte/store';
 
-	let allMovements: Writable<Movement_Type[]> = writable([]);
-	let allPatterns: Writable<Pattern_Type[]> = writable([]);
+	let allMovements: Writable<MovementType[]> = writable([]);
+	let allPatterns: Writable<PatternType[]> = writable([]);
 	let errorText: string | null = null;
 	let storesUpdate: boolean = false;
 	let mpTable: Writable<any> = writable({});
@@ -32,21 +22,29 @@
 
 	async function updateStores() {
 		storesUpdate = true;
-		$allMovements = await getAllMovements();
-		$allPatterns = await getAllPatterns();
-		$mpTable = await getMovementPatternTable();
+		$allMovements = await db.Movement.getAll();
+		$allPatterns = await db.Pattern.getAll();
+		$mpTable = await db.MovementPattern.getTable();
 		storesUpdate = false;
 	}
 
-	async function updateTableValue(movementName: string, patternName: string) {
-		const oldTbl = await getMovementPatternTable();
+	async function updateTableValue(
+		movementName: string,
+		patternName: string,
+	) {
+		const oldTbl = await db.MovementPattern.getTable();
 		const updatedValue = $mpTable[movementName][patternName];
 		if (isNaN(updatedValue)) {
-			$mpTable[movementName][patternName] = oldTbl[movementName][patternName];
+			$mpTable[movementName][patternName] =
+				oldTbl[movementName][patternName];
 		} else {
 			try {
 				storesUpdate = true;
-				await updateMovementPattern(movementName, patternName, updatedValue);
+				await db.MovementPattern.update(
+					movementName,
+					patternName,
+					updatedValue,
+				);
 			} catch (error) {
 				console.error(error);
 			} finally {
@@ -59,13 +57,13 @@
 
 	async function addNewMovement() {
 		storesUpdate = true;
-		await addMovement(newMovementName);
+		await db.Movement.insert(newMovementName);
 		await updateStores();
 	}
 
 	async function deleteMoveByName(name: string) {
 		storesUpdate = true;
-		await deleteMovementByName(name);
+		await db.Movement.deleteByName(name);
 		await updateStores();
 	}
 </script>
@@ -89,7 +87,8 @@
 					<input
 						type="number"
 						bind:value={$mpTable[move][pattern.name]}
-						on:change={async () => await updateTableValue(move, pattern.name)}
+						on:change={async () =>
+							await updateTableValue(move, pattern.name)}
 						class="percent"
 					/>
 				</div>
@@ -98,7 +97,11 @@
 		<div>
 			<form on:submit|preventDefault={async () => await addNewMovement()}>
 				<label for="newMovementName">Name:</label>
-				<input type="text" id="newMovementName" bind:value={newMovementName} />
+				<input
+					type="text"
+					id="newMovementName"
+					bind:value={newMovementName}
+				/>
 				<button type="submit" class="border-2 border-black">Add</button>
 			</form>
 		</div>

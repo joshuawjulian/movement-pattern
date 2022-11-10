@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { db } from '$lib/db';
-	import type { MovementType } from '$lib/movement';
+	import type { MovementType } from '$lib/db/movement';
 
 	import { onMount } from 'svelte/internal';
 

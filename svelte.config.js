@@ -10,6 +10,9 @@ const config = {
 			postcss:true
 		}),
 	],
+	compilerOptions: {
+		css: 'external'
+	},
 
 	kit: {
 		adapter: adapter(),

@@ -1,9 +1,10 @@
 <script lang="ts">
-	import type { WorkoutResponseSuccess } from '$lib/workout';
+	import type { WorkoutResponseSuccess } from '$lib/db/workout';
 	import { createEventDispatcher, onMount } from 'svelte';
 	import { writable, type Writable } from 'svelte/store';
+	import { fade } from 'svelte/transition';
 	import { db } from '$lib/db';
-	import type { MovementType } from '$lib/movement';
+	import type { MovementType } from '$lib/db/movement';
 
 	export let workout: WorkoutResponseSuccess = {
 		id: '',
@@ -16,6 +17,7 @@
 	const dispatch = createEventDispatcher();
 
 	let allMovements: Writable<any[]> = writable([]);
+	let suggestedMovements: Writable<MovementType[]> = writable([]);
 	let selectedMovements: MovementType[] = [];
 	let selectedMovement: MovementType;
 
@@ -52,6 +54,15 @@
 
 	$: if (workout && workout.movements) {
 		selectedMovements = workout.movements;
+		suggestMovements();
+	}
+
+	async function suggestMovements() {
+		console.log(`suggestMovement fired`);
+		$suggestedMovements = await db.Movement.suggestMovements(
+			workout.description,
+			selectedMovements,
+		);
 	}
 
 	onMount(async () => {
@@ -68,25 +79,35 @@
 			type="text"
 			id="workout_desc"
 			bind:value={workout.description}
+			on:keyup={async () => await suggestMovements()}
 		/>
-		<label for="workout_movement_select">Select Movements:</label>
 		<div class="movement-container">
-			{#each selectedMovements as selMove}
-				<div class="movement">
-					<button on:click|preventDefault={() => removeMovement(selMove)}
-						><span class="material-icons">delete</span></button
-					>
-					<div>{selMove.name}</div>
-				</div>
-			{/each}
-		</div>
-		<div>
-			<select bind:value={selectedMovement}>
-				{#each $allMovements as movement}
-					<option value={movement}>{movement.name}</option>
+			<div class="suggested-movement">
+				<ul>
+					{#each $suggestedMovements as move, idx}
+						<li>{move.name}</li>
+					{/each}
+				</ul>
+			</div>
+			<div class="selected-movement">
+				<label for="workout_movement_select">Select Movements:</label>
+				{#each selectedMovements as selMove, idx}
+					<div class="movement" transition:fade={{ duration: 250 }}>
+						<button on:click|preventDefault={() => removeMovement(selMove)}
+							>{selMove.name}
+							<span class="material-icons">delete</span></button
+						>
+					</div>
 				{/each}
-			</select>
-			<button on:click|preventDefault={addSelectedMovement}>Add</button>
+			</div>
+			<div class="select-movement">
+				<select bind:value={selectedMovement}>
+					{#each $allMovements as movement}
+						<option value={movement}>{movement.name}</option>
+					{/each}
+				</select>
+				<button on:click|preventDefault={addSelectedMovement}>Add</button>
+			</div>
 		</div>
 		<button type="submit">Save/Update</button>
 	</form>
@@ -113,18 +134,39 @@
 
 	div.movement-container {
 		display: flex;
-		flex-direction: row;
+		flex-direction: column;
 		gap: 1rem;
+		margin: 1rem 0;
+
+		& > div {
+			display: flex;
+			flex-direction: row;
+			justify-content: center;
+			gap: 1rem;
+		}
 	}
 	div.movement {
 		display: flex;
 		flex-direction: row;
-
+		border: 2px solid var(--theme-accent);
 		align-items: center;
+		height: 100%;
 
 		& > button {
 			display: flex;
 			align-items: center;
+			border: none;
+			height: 100%;
+
+			&:hover {
+				transition-duration: 100ms;
+				background-color: var(--theme-bg);
+			}
+
+			& > span {
+				font-size: 1rem;
+				height: 100%;
+			}
 		}
 	}
 </style>

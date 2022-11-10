@@ -1,28 +1,28 @@
-import { supabase } from '$lib/supabase';
-import { db } from './db';
+import { supabase } from './supabase';
+import { db } from '.';
 import type { MovementType } from './movement';
 import type { PatternType } from './pattern';
 
-export type MovementPattern_Type = {
+export type MovementPatternType = {
 	id: string;
 	percent: number;
 	movement: MovementType;
 	pattern: PatternType;
 };
 
-export async function getAllMovementPatterns() {
+async function getAll() {
 	const { data, error } = await supabase
 		.from('movement_pattern')
 		.select('id, movement(*), pattern(*), percent')
 		.order('id', { foreignTable: 'movement' });
 	if (error) throw new Error(error.message);
-	return data as MovementPattern_Type[];
+	return data as MovementPatternType[];
 }
 
-export async function getMovementPatternByMovementPattern(
+async function getByMovementAndPattern(
 	movementName: string,
 	patternName: string,
-): Promise<MovementPattern_Type | null> {
+): Promise<MovementPatternType | null> {
 	const m = await db.Movement.getByName(movementName);
 	const p = await db.Pattern.getByName(patternName);
 	const { data, error } = await supabase
@@ -34,10 +34,10 @@ export async function getMovementPatternByMovementPattern(
 
 	if (error) return null;
 
-	return data as MovementPattern_Type;
+	return data as MovementPatternType;
 }
 
-export async function getMovementPatternTable() {
+async function getTable() {
 	let table: any = {};
 
 	const allMovements = await db.Movement.getAll();
@@ -50,14 +50,14 @@ export async function getMovementPatternTable() {
 		});
 	});
 
-	(await getAllMovementPatterns()).forEach((mp) => {
+	(await getAll()).forEach((mp) => {
 		table[mp.movement.name][mp.pattern.name] = mp.percent;
 	});
 
 	return table;
 }
 
-export async function updateMovementPattern(
+async function update(
 	movementName: string,
 	patternName: string,
 	percent: number,
@@ -85,7 +85,7 @@ export async function updateMovementPattern(
 			});
 		if (error) throw new Error(error.message);
 	} else {
-		const mp = await getMovementPatternByMovementPattern(m.name, p.name);
+		const mp = await getByMovementAndPattern(m.name, p.name);
 
 		let upsert = {};
 
@@ -112,3 +112,10 @@ export async function updateMovementPattern(
 		if (error) throw new Error(error.message);
 	}
 }
+
+export const MovementPattern = {
+	getAll,
+	update,
+	getTable,
+	getByMovementAndPattern,
+};

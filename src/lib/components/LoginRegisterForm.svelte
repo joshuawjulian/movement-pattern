@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { supabase, userStore } from '$lib/supabase';
+	import { supabase, userStore } from '$lib/db/supabase';
 	import { fly } from 'svelte/transition';
 
 	let isRegister = false;
@@ -71,7 +71,9 @@
 				<input type="text" id="email" name="email" bind:value={email} />
 			</div>
 			<div class="input-group">
-				<label for="password"><span class="material-icons">lock</span></label>
+				<label for="password"
+					><span class="material-icons">lock</span></label
+				>
 				<input
 					type="password"
 					id="password"
@@ -80,7 +82,10 @@
 				/>
 			</div>
 			{#if isRegister}
-				<div class="input-group" transition:fly={{ x: 400, duration: 750 }}>
+				<div
+					class="input-group"
+					transition:fly={{ x: 400, duration: 750 }}
+				>
 					<label for="password_again"
 						><span class="material-icons">lock</span></label
 					>

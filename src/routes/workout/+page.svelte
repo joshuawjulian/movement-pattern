@@ -1,13 +1,10 @@
 <script lang="ts">
 	import WorkoutForm from '$components/WorkoutForm.svelte';
-	import {
-		getAllWorkoutShort,
-		getWorkoutById,
-		type WorkoutResponseSuccess,
-	} from '$lib/workout';
+	import { db } from '$lib/db';
+	import type { WorkoutShortType } from '$lib/db/workout';
 	import { onMount } from 'svelte';
 
-	let allWorkouts: WorkoutResponseSuccess[] = [];
+	let allWorkouts: WorkoutShortType[] = [];
 
 	let currentWorkout = {
 		id: '',
@@ -18,41 +15,61 @@
 	};
 
 	async function loadWorkout(id: string) {
-		currentWorkout = await getWorkoutById(id);
+		currentWorkout = await db.Workout.getById(id);
 	}
 
 	async function updateForm() {
-		allWorkouts = await getAllWorkoutShort();
+		allWorkouts = await db.Workout.getAllShort();
 	}
 
 	onMount(async () => {
-		allWorkouts = await getAllWorkoutShort();
+		allWorkouts = await db.Workout.getAllShort();
 	});
 </script>
 
 <div class="wrapper">
-	<div>
-		{#each allWorkouts as workout}
-			<button
-				on:click|preventDefault={async () => await loadWorkout(workout.id)}
-				>{workout.name}</button
-			>
-		{/each}
+	<div class="list">
+		<ul>
+			{#each allWorkouts as workout}
+				<li>
+					<button
+						on:click|preventDefault={async () =>
+							await loadWorkout(workout.id)}>{workout.name}</button
+					>
+				</li>
+			{/each}
+		</ul>
 	</div>
-	<WorkoutForm
-		bind:workout={currentWorkout}
-		on:upsert={async () => await updateForm()}
-	/>
+	<div class="workout">
+		<WorkoutForm
+			bind:workout={currentWorkout}
+			on:upsert={async () => await updateForm()}
+		/>
+	</div>
 </div>
 
 <style lang="postcss">
 	div.wrapper {
-		width: 70%;
-		height: 100%;
+		width: 100%;
+		min-height: 100%;
+
+		display: grid;
+		grid-template-columns: 3fr 5fr;
+	}
+
+	div.list {
 		display: flex;
 		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		margin: 0 auto;
+		width: 100%;
+
+		border-right: 4px solid var(--theme-pri);
+		& > ul {
+			& > li {
+			}
+		}
+	}
+
+	div.workout {
+		margin: 0 250px;
 	}
 </style>

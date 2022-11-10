@@ -18,8 +18,8 @@ async function update(
 	if (typeof data === 'undefined') data = [];
 
 	let currentMovements: MovementType[] = [];
-	data.forEach((value) => {
-		currentMovements.push(<MovementType>value.movement);
+	data.forEach((value: MovementType) => {
+		currentMovements.push(value);
 	});
 
 	let movementsToAdd = [];

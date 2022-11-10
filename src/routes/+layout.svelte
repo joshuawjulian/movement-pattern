@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { supabase, userStore } from '$lib/supabase';
+	import { supabase, userStore } from '$lib/db/supabase';
 	import './reset.css';
 	import '../app.css';
 
@@ -74,5 +74,6 @@
 		width: 100%;
 		height: 100%;
 		flex: 1;
+		display: flex;
 	}
 </style>

@@ -1,10 +1,20 @@
+import { z } from 'zod';
 import type { Database } from './database.types';
 import { supabase } from './supabase';
 
-export type MovementType =
-	Database['public']['Tables']['movement']['Row'] & {
-		names: { name: string; id: string }[];
-	};
+export const MovementZod = z.object({
+	id: z.string().uuid().optional(),
+	name: z.string(),
+	names: z
+		.array(
+			z.object({
+				name: z.string(),
+			}),
+		)
+		.optional(),
+});
+
+export type MovementType = z.infer<typeof MovementZod>;
 
 export const Movement = {
 	getAll,
@@ -24,7 +34,12 @@ async function getAll(): Promise<MovementType[]> {
 		.select('*, names:movement_name(name)')
 		.order('name');
 	if (error) throw new Error(error.message);
-	return data;
+
+	const MovementZodArray = z.array(MovementZod);
+
+	let parsedData: MovementType[] = MovementZodArray.parse(data);
+
+	return parsedData;
 }
 
 export async function getById(id: string) {

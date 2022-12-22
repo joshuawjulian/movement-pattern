@@ -35,17 +35,14 @@
 <form on:submit|preventDefault>
 	<div>
 		<label for="id">Id</label>
-		<input type="text" id="id" bind:value={movement.id} />
+		<input type="text" id="id" disabled bind:value={movement.id} />
 	</div>
 	<div>
 		<label for="name">Name</label>
 		<input type="text" id="name" bind:value={movement.name} />
 	</div>
 	<div class="altNames">
-		<label>
-			<p>Alt Names</p>
-			<button on:click={addNameRow}>+</button>
-		</label>
+		<p>Alternative Names</p>
 		{#if movement.names}
 			{#each movement.names as altname, idx}
 				<div class="altName">
@@ -56,6 +53,7 @@
 				</div>
 			{/each}
 		{/if}
+		<button on:click={addNameRow}>Add Name</button>
 	</div>
 	<button on:click={dispatchUpdate}>Save</button>
 </form>

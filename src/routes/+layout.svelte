@@ -11,34 +11,30 @@
 </script>
 
 <div class="wrapper">
-	<header>Additional Work</header>
-	<nav>
-		{#if !$userStore}
-			<a href="/login">Login/Register</a>
-		{:else}
-			<a href="/login" on:click|preventDefault={logout}>Logout</a>
-		{/if}
-		<a href="/admin">Admin</a>
-		<a href="/workout">Workout</a>
-		{#if $userStore}
-			<h5>
-				Logged in as: {$userStore.email}
-			</h5>
-		{/if}
-		<DarkLightMode />
-	</nav>
+	<header>
+		<a href="/" class="title">Workout App</a>
+		<nav>
+			{#if !$userStore}
+				<a href="/login">Login/Register</a>
+			{:else}
+				<a href="/login" on:click|preventDefault={logout}>Logout</a>
+			{/if}
+			<a href="/admin">Admin</a>
+			<a href="/workout">Workout</a>
+			{#if $userStore}
+				<a href="/">Logged in</a>
+			{/if}
+		</nav>
+		<section>
+			<DarkLightMode />
+		</section>
+	</header>
 	<main>
 		<slot />
 	</main>
 </div>
 
 <style lang="postcss">
-	header {
-		font-size: 3.5rem;
-		background-color: var(--theme-bg);
-		color: var(--theme-pri);
-		border-bottom: 3px solid var(--theme-pri);
-	}
 	div.wrapper {
 		background-color: var(--theme-bg);
 		border: 2px solid black;
@@ -48,26 +44,36 @@
 		flex-direction: column;
 	}
 
-	nav {
-		display: flex;
-		justify-content: center;
-		background-color: var(--theme-bg);
-		border-bottom: 3px solid var(--theme-fg);
+	header {
+		display: grid;
+		grid-template-columns: 1fr auto 1fr;
 		border-bottom: var(--theme-pri) solid 3px;
-		background-color: var(--theme-bg);
-		& a {
-			padding: 0 0.5rem;
+
+		& a.title {
+			font-size: 1.7em;
+			color: var(--theme-pri);
+			display: flex;
+		}
+
+		& nav {
 			display: flex;
 			justify-content: center;
-			align-items: center;
-			color: var(--theme-fg);
 			background-color: var(--theme-bg);
+			& a {
+				padding: 0 0.5rem;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				color: var(--theme-fg);
+				background-color: var(--theme-bg);
+			}
 		}
-	}
 
-	h5 {
-		display: flex;
-		align-items: center;
+		& section {
+			display: flex;
+			align-items: center;
+			justify-content: end;
+		}
 	}
 
 	main {
@@ -75,5 +81,6 @@
 		height: 100%;
 		flex: 1;
 		display: flex;
+		border: 1px solid blue;
 	}
 </style>

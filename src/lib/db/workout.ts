@@ -1,6 +1,7 @@
 import type { Database } from './database.types';
-import type { MovementType } from './movement';
+import { MovementZod, type MovementType } from './movement';
 import { supabase } from './supabase';
+import { z } from 'zod';
 
 export const Workout = {
 	upsertAndReturn,
@@ -8,28 +9,52 @@ export const Workout = {
 	getAllShort,
 };
 
-export type WorkoutType = {
-	id: string;
-	name: string;
-	description: string;
+export const WorkoutZod = z.object({
+	id: z.string().uuid(),
+	name: z.string(),
+	description: z.string(),
+	created_by: z.string().uuid(),
+	movements: z.array(MovementZod),
+});
+
+export type WorkoutType = z.infer<typeof WorkoutZod>;
+
+export const WorkoutInsertZod = z.object({
+	name: z.string(),
+	description: z.string(),
+});
+
+export const WorkoutUpdateZod = z.object({
+	id: z.string().uuid(),
+	name: z.string(),
+	description: z.string(),
+});
+export const WorkoutUpsertZod = z.union([
+	WorkoutUpdateZod,
+	WorkoutInsertZod,
+]);
+
+export const EmptyWorkout: WorkoutType = {
+	id: '',
+	name: '',
+	description: '',
+	created_by: '',
+	movements: [],
 };
 
-async function getById(id: string) {
+async function getById(id: string): Promise<WorkoutType> {
 	const { data, error } = await supabase
 		.from('workout')
-		.select(`*, movements:workout_movement(id, movement(id,name))`)
+		.select(`*, movements:movement(*)`)
 		.eq('id', id)
 		.single();
 
 	if (error) throw new Error(error.message);
-	let movements: MovementType[] = [];
 
-	data.movements.forEach((item: any) => {
-		movements.push(item.movement);
-	});
+	console.log(data);
+	let workout = WorkoutZod.parse(data);
 
-	data.movements = movements;
-	return data;
+	return workout;
 }
 
 export type WorkoutShortType = {
@@ -47,14 +72,9 @@ async function getAllShort(): Promise<WorkoutShortType[]> {
 	return data;
 }
 
-export type WorkoutResponse = Awaited<ReturnType<typeof getById>>;
-export type WorkoutResponseSuccess = WorkoutResponse['data'] & {
-	movements: MovementType[];
-};
+export type WorkoutUpsertType = z.infer<typeof WorkoutUpsertZod>;
 
-export type WorkoutInsertType =
-	Database['public']['Tables']['workout']['Insert'];
-export async function upsertAndReturn(workout: WorkoutInsertType) {
+export async function upsertAndReturn(workout: WorkoutUpsertType) {
 	console.log(`upsertWorkout()`);
 	console.log(workout);
 	const { data, error } = await supabase
@@ -68,5 +88,7 @@ export async function upsertAndReturn(workout: WorkoutInsertType) {
 		throw new Error(error.message);
 	}
 
-	return data;
+	let parsed = WorkoutZod.parse(data);
+
+	return parsed;
 }

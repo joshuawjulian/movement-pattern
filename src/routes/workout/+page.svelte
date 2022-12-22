@@ -32,9 +32,8 @@
 		<ul>
 			{#each allWorkouts as workout}
 				<li>
-					<button
-						on:click|preventDefault={async () =>
-							await loadWorkout(workout.id)}>{workout.name}</button
+					<a href={`/workout/${workout.name}/${workout.id}/`}
+						>{workout.name}</a
 					>
 				</li>
 			{/each}

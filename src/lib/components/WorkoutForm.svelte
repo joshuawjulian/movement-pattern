@@ -1,12 +1,12 @@
 <script lang="ts">
-	import type { WorkoutResponseSuccess } from '$lib/db/workout';
+	import type { WorkoutType, WorkoutUpsertType } from '$lib/db/workout';
 	import { createEventDispatcher, onMount } from 'svelte';
 	import { writable, type Writable } from 'svelte/store';
 	import { fade } from 'svelte/transition';
 	import { db } from '$lib/db';
 	import type { MovementType } from '$lib/db/movement';
 
-	export let workout: WorkoutResponseSuccess = {
+	export let workout: WorkoutType = {
 		id: '',
 		name: '',
 		description: '',
@@ -34,7 +34,7 @@
 
 	async function upsertThisWorkout() {
 		console.log(workout);
-		let workoutToUpsert: WorkoutResponseSuccess;
+		let workoutToUpsert: WorkoutUpsertType;
 		if (workout.id === '') {
 			workoutToUpsert = {
 				name: workout.name,
@@ -110,6 +110,7 @@
 			</div>
 		</div>
 		<button type="submit">Save/Update</button>
+		<button on:click|preventDefault>Delete</button>
 	</form>
 </div>
 
